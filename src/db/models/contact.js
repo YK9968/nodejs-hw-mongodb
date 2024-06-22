@@ -21,11 +21,11 @@ const contactsSchema = new Schema(
     contactType: {
       type: String,
       enum: ['work', 'home', 'personal'],
-      required: true,
+      required: false,
       default: 'personal',
     },
   },
-  { timestamps: true },
+  { timestamps: true, versionKey: false },
 );
 
 export const ContactsCollection = model('contacts', contactsSchema);
