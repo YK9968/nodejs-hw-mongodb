@@ -8,16 +8,31 @@ import {
 } from '../controllers/contacts.js';
 
 import ctrlWrapper from '../utils/ctrlWrapper.js';
+
+import validateBody from '../utils/validateBody.js';
+import {
+  contactsAddShema,
+  contactsUpdateShema,
+} from '../validation/contacts.js';
+
 const contactsRouters = express.Router();
 
 contactsRouters.get('/', ctrlWrapper(getAllContactsController));
 
 contactsRouters.get('/:contactId', ctrlWrapper(getContactByIdController));
 
-contactsRouters.post('/', ctrlWrapper(addContactController));
+contactsRouters.post(
+  '/',
+  validateBody(contactsAddShema),
+  ctrlWrapper(addContactController),
+);
+
+contactsRouters.patch(
+  '/:contactId',
+  validateBody(contactsUpdateShema),
+  ctrlWrapper(updateContactController),
+);
 
 contactsRouters.delete('/:contactId', ctrlWrapper(deleteContactController));
-
-contactsRouters.patch('/:contactId', ctrlWrapper(updateContactController));
 
 export default contactsRouters;
