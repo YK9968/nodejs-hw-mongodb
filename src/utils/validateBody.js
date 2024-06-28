@@ -15,5 +15,4 @@ const validateBody = (shema) => {
   };
   return func;
 };
-
 export default validateBody;
