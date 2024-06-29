@@ -9,5 +9,4 @@ const calcPaginationData = ({ totalItems, page, perPage }) => {
     hasPreviousPage,
   };
 };
-
 export default calcPaginationData;
