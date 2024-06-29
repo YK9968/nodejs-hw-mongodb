@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose';
 import { mongooseSaveError } from './hooks.js';
+import { typeList } from '../../constants/contacts-constants.js';
 
 const contactsSchema = new Schema(
   {
@@ -21,7 +22,7 @@ const contactsSchema = new Schema(
     },
     contactType: {
       type: String,
-      enum: ['work', 'home', 'personal'],
+      enum: typeList,
       required: false,
       default: 'personal',
     },

@@ -8,3 +8,5 @@ export const contactsFieldList = [
   'createdAt',
   'updatedAt',
 ];
+
+export const typeList = ['work', 'home', 'personal'];
