@@ -7,9 +7,7 @@ const validateBody = (shema) => {
       });
       next();
     } catch (error) {
-      const responseError = createHttpError(400, error.message, {
-        errors: error.details,
-      });
+      const responseError = createHttpError(400, error.message);
       next(responseError);
     }
   };
