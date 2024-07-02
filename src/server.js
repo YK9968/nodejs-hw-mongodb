@@ -5,6 +5,7 @@ import { env } from './utils/env.js';
 import contactsRouters from './routers/contacts.js';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
+import authRouter from './routers/auth.js';
 
 const PORT = Number(env('PORT', '3000'));
 
@@ -20,6 +21,7 @@ export const setupServer = () => {
     }),
   );
   app.use('/contacts', contactsRouters);
+  app.use('/register', authRouter);
   app.use('*', notFoundHandler);
   app.use(errorHandler);
 
