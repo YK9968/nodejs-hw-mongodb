@@ -3,9 +3,10 @@ import { typeList } from '../constants/contacts-constants.js';
 const parseBoolean = (value) => {
   if (typeof value !== 'string') return;
 
-  if (!['false', 'true'].includes(value)) return;
+  if (!['true', 'false'].includes(value)) return;
 
   const parsedValue = value.toLowerCase() === 'true';
+
   return parsedValue;
 };
 
