@@ -1,9 +1,10 @@
 import createHttpError from 'http-errors';
 import { UsersCollection } from '../db/models/user.js';
 import bcrypt from 'bcrypt';
-import { randomBytes } from 'crypto';
-import { FIFTEEN_MINUTES, ONE_MONTH } from '../constants/contacts-constants.js';
+
 import { SessionsCollection } from '../db/models/session.js';
+
+import { createSession } from './session.js';
 
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
@@ -27,14 +28,10 @@ export const loginUser = async (payload) => {
   }
   await SessionsCollection.deleteOne({ userId: user._id });
 
-  const accessToken = randomBytes(30).toString('base64');
-  const refreshToken = randomBytes(30).toString('base64');
+  const session = createSession(user._id);
+  return session;
+};
 
-  return await SessionsCollection.create({
-    userId: user._id,
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
-    refreshTokenValidUntil: new Date(Date.now() + ONE_MONTH),
-  });
+export const logoutUser = async (sessionId) => {
+  await SessionsCollection.deleteOne({ _id: sessionId });
 };
