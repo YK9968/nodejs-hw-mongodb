@@ -14,8 +14,11 @@ import {
   contactsAddShema,
   contactsUpdateShema,
 } from '../validation/contacts.js';
+import authenticate from '../middlewares/authenticate.js';
 
 const contactsRouters = express.Router();
+
+contactsRouters.use(authenticate);
 
 contactsRouters.get('/', ctrlWrapper(getAllContactsController));
 
