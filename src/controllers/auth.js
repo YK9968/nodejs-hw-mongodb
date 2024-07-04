@@ -1,5 +1,6 @@
 import { loginUser, logoutUser, registerUser } from '../services/auth.js';
 import { ONE_MONTH } from '../constants/contacts-constants.js';
+
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
 
