@@ -8,10 +8,14 @@ export const getAllContacts = async ({
   sortOrder,
   contactType,
   isFavourite,
+  userId,
 }) => {
   const skip = (page - 1) * perPage;
   const dataBaseQuery = ContactsCollection.find();
 
+  if (userId) {
+    dataBaseQuery.where('userId').equals(userId);
+  }
   if (contactType) {
     dataBaseQuery.where('contactType').equals(contactType);
   }
@@ -44,9 +48,10 @@ export const getAllContacts = async ({
   };
 };
 
-export const getContactById = async (studentId) => {
-  const student = await ContactsCollection.findById(studentId);
-  return student;
+export const getContactById = async (filter) => {
+  console.log(filter);
+  const contact = await ContactsCollection.findOne(filter);
+  return contact;
 };
 
 export const addContact = async (body) => {
@@ -54,25 +59,20 @@ export const addContact = async (body) => {
   return contact;
 };
 
-export const deleteContact = async (contactId) => {
-  const contact = await ContactsCollection.findOneAndDelete({
-    _id: contactId,
-  });
+export const deleteContact = async (filter) => {
+  const contact = await ContactsCollection.findOneAndDelete(filter);
 
   return contact;
 };
 
-export const updateContact = async (contactId, payload, options = {}) => {
-  const rawResult = await ContactsCollection.findOneAndUpdate(
-    { _id: contactId },
-    payload,
-    {
-      new: true,
-      runValidators: true,
-      includeResultMetadata: true,
-      ...options,
-    },
-  );
+export const updateContact = async (filter, payload, options = {}) => {
+  console.log(filter);
+  const rawResult = await ContactsCollection.findOneAndUpdate(filter, payload, {
+    new: true,
+    runValidators: true,
+    includeResultMetadata: true,
+    ...options,
+  });
   if (!rawResult || !rawResult.value) return null;
 
   return {
