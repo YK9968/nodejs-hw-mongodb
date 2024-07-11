@@ -7,11 +7,13 @@ import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
 import authRouter from './routers/auth.js';
 import cookieParser from 'cookie-parser';
+import { UPLOAD_DIR } from './constants/contacts-constants.js';
 
 const PORT = Number(env('PORT', '3000'));
 
 export const setupServer = () => {
   const app = express();
+
   app.use(express.json());
   app.use(cors());
   app.use(
@@ -21,6 +23,7 @@ export const setupServer = () => {
       },
     }),
   );
+  app.use('/uploads', express.static(UPLOAD_DIR));
   app.use(cookieParser());
   app.use('/contacts', contactsRouters);
   app.use('/auth', authRouter);
