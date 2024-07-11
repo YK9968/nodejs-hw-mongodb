@@ -11,6 +11,8 @@ import parsSortParams from '../utils/parsSortParams.js';
 import { contactsFieldList } from '../constants/contacts-constants.js';
 import parsContactsFilterParams from '../utils/parsContactsFilterParams.js';
 import saveFileToUploadDir from '../utils/saveFileToUploadDir.js';
+import { env } from '../utils/env.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getAllContactsController = async (req, res) => {
   const userId = req.user._id;
@@ -58,7 +60,11 @@ export const addContactController = async (req, res) => {
   let photoUrl;
 
   if (photo) {
-    photoUrl = await saveFileToUploadDir(photo);
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
   }
 
   const data = await addContact({
