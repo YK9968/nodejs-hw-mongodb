@@ -53,6 +53,7 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const addContactController = async (req, res) => {
   const data = await addContact({ ...req.body, userId: req.user._id });
+  console.log(req.file);
 
   res.status(201).json({
     status: 201,
