@@ -56,7 +56,7 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const addContactController = async (req, res) => {
   const photo = req.file;
-  console.log(photo);
+
   let photoUrl;
 
   if (photo) {
@@ -95,9 +95,23 @@ export const deleteContactController = async (req, res, next) => {
 };
 
 export const updateContactController = async (req, res, next) => {
+  const photo = req.file;
+
+  let photoUrl;
+
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
   const { contactId } = req.params;
   const userId = req.user._id;
-  const result = await updateContact({ _id: contactId, userId }, req.body);
+  const result = await updateContact(
+    { _id: contactId, userId },
+    { ...req.body, photo: photoUrl },
+  );
 
   if (!result) {
     next(createHttpError(404, 'Contact not found'));
