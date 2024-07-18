@@ -142,7 +142,6 @@ export const authGoogleController = async (req, res) => {
   }
 
   const session = await createSession(user._id);
-  console.log(session);
 
   res.json({
     status: 200,
