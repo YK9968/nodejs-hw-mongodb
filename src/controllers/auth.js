@@ -5,8 +5,16 @@ import {
   requestResetToken,
 } from '../services/auth.js';
 import { ONE_MONTH } from '../constants/contacts-constants.js';
-import { refreshUsersSession } from '../services/session.js';
+import { createSession, refreshUsersSession } from '../services/session.js';
 import { resetPassword } from '../services/auth.js';
+import {
+  generateAuthUrl,
+  getGoogleAuthName,
+  validateGoogleOAuthCode,
+} from '../utils/googleOAuth2.js';
+import { randomBytes } from 'crypto';
+import createHttpError from 'http-errors';
+import { UsersCollection } from '../db/models/user.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -96,5 +104,51 @@ export const resetPasswordController = async (req, res) => {
     message: 'Password was successfully reset!',
     status: 200,
     data: {},
+  });
+};
+
+export const getGoogleOAuthUrlController = async (req, res) => {
+  const url = generateAuthUrl();
+
+  return res.json({
+    status: 200,
+    message: 'Google OAuth url generate successfully',
+    data: {
+      url,
+    },
+  });
+};
+
+export const authGoogleController = async (req, res) => {
+  const { code } = req.body;
+
+  const ticket = validateGoogleOAuthCode(code);
+  const userPayload = (await ticket).getPayload();
+
+  if (!userPayload) {
+    throw createHttpError(401);
+  }
+
+  let user = await UsersCollection.findOne({ email: userPayload.email });
+
+  if (!user) {
+    const registerData = {
+      name: getGoogleAuthName(userPayload),
+      email: userPayload.email,
+      password: randomBytes(10),
+    };
+
+    user = await registerUser(registerData);
+  }
+
+  const session = await createSession(user._id);
+  console.log(session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully logged in an user!',
+    data: {
+      accessToken: session.accessToken,
+    },
   });
 };

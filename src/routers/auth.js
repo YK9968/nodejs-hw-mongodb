@@ -4,8 +4,11 @@ import {
   registerUserSchema,
   requestResetEmailSchema,
   resetPasswordSchema,
+  userGoogleAuthCodeSchema,
 } from '../validation/auth.js';
 import {
+  getGoogleOAuthUrlController,
+  authGoogleController,
   loginUserController,
   logoutUserController,
   refreshUserSessionController,
@@ -44,6 +47,14 @@ authRouter.post(
   '/reset-pwd',
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
+);
+
+authRouter.get('/get-auth-url', ctrlWrapper(getGoogleOAuthUrlController));
+
+authRouter.post(
+  '/confirm-google-auth',
+  validateBody(userGoogleAuthCodeSchema),
+  ctrlWrapper(authGoogleController),
 );
 
 export default authRouter;
